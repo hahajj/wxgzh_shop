@@ -1,0 +1,3 @@
+litemall-all/src/
+litemall-all/target/*
+!litemall-all/target/litemall-all-0.1.0-exec.jar

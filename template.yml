@@ -1,0 +1,41 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  LiteMall:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: helloworld
+    litemall:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'index.handler' 
+        Runtime: custom
+        CodeUri: ./litemall-all
+        MemorySize: 1024
+        Timeout: 120
+        InstanceConcurrency: 30
+        EnvironmentVariables:
+          # todo: 替换成自己的 mysql 地址
+          SPRING_DATASOURCE_DRUID_URL: jdbc:mysql://localhost:3306/litemall?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+          # todo: 替换成自己的 mysql 的 username
+          SPRING_DATASOURCE_DRUID_USERNAME: root
+          # todo: 替换成自己的 mysql 的 password
+          SPRING_DATASOURCE_DRUID_PASSWORD: password
+      Events:
+        httpTrigger:
+          Type: HTTP
+          Properties:
+            AuthType: ANONYMOUS
+            Methods:
+              - POST
+              - GET
+  # todo: 替换为自己的域名
+  litemall.mofangdegisn.cn:
+    Type: "Aliyun::Serverless::CustomDomain"
+    Properties:
+      Protocol: HTTP
+      RouteConfig:
+        routes:
+          /*:
+            ServiceName: LiteMall
+            FunctionName: litemall
